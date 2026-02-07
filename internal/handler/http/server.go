@@ -6,20 +6,26 @@ import (
 
 	"github.com/alirezaarzehgar/pastebin/internal/config"
 	"github.com/alirezaarzehgar/pastebin/internal/handler"
+	"github.com/alirezaarzehgar/pastebin/internal/usecase"
 )
 
 type HttpHandler struct {
-	config *config.Config
+	config          *config.Config
+	pastebinUsecase usecase.Pastebin
 }
 
-func New(cfg *config.Config) handler.Handler {
+func New(
+	cfg *config.Config,
+	pastebinUsecase usecase.Pastebin,
+) handler.Handler {
 	return &HttpHandler{
-		config: cfg,
+		config:          cfg,
+		pastebinUsecase: pastebinUsecase,
 	}
 }
 
 func (h HttpHandler) Start() error {
-	mux := nweRouter()
+	mux := h.newRouter()
 	addr := fmt.Sprintf("%s:%d", h.config.Http.Address, h.config.Http.Port)
 
 	srv := &http.Server{

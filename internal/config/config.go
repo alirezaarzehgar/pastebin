@@ -17,6 +17,10 @@ type Config struct {
 		ReadTimeout  time.Duration
 		WriteTimeout time.Duration
 	}
+
+	Handler struct {
+		MaxFileSize int64
+	}
 }
 
 type ConfigLoader interface {

@@ -7,6 +7,7 @@ import (
 	handlerHttp "github.com/alirezaarzehgar/pastebin/internal/handler/http"
 	"github.com/alirezaarzehgar/pastebin/internal/logger"
 	loggerFactory "github.com/alirezaarzehgar/pastebin/internal/logger/factory"
+	"github.com/alirezaarzehgar/pastebin/internal/usecase/pastebin"
 )
 
 func main() {
@@ -20,8 +21,10 @@ func main() {
 	loggerChoice := loggerFactory.New(loggerFactory.LoggerSlog, cfg)
 	logger.DefaultLogger = loggerChoice
 
+	pastebinUsecase := pastebin.New()
+
 	logger.Info("start application", "address", cfg.Http.Address, "port", cfg.Http.Port)
-	h := handlerHttp.New(cfg)
+	h := handlerHttp.New(cfg, pastebinUsecase)
 	if err := h.Start(); err != nil {
 		logger.Error("failed to start server", "error", err)
 		os.Exit(1)

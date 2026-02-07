@@ -23,7 +23,12 @@ func (l dotenvLoader) Load() (*config.Config, error) {
 		return nil, err
 	}
 
-	cfg, err = loadHttpConfig(cfg)
+	err = loadHttpConfig(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	err = loadHandlerConfig(cfg)
 	if err != nil {
 		return nil, err
 	}

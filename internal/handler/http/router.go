@@ -4,12 +4,17 @@ import (
 	"net/http"
 )
 
-func nweRouter() *http.ServeMux {
+func (h *HttpHandler) newRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, Worlds"))
-	}))
+	mux.HandleFunc("/paste", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodPost:
+			h.createPaste(w, r)
+		case http.MethodGet:
+			h.getPaste(w, r)
+		}
+	})
 
 	return mux
 }
