@@ -9,7 +9,7 @@ const (
 )
 
 func loadHandlerConfig(cfg *config.Config) error {
-	maxFileSize, err := parseInt64("HANDLER_MAX_FILE_SIZE", DefaultHandlerMaxFileSize)
+	maxFileSize, err := parseInt64(KeyHandlerMaxFileSize, DefaultHandlerMaxFileSize)
 	if err != nil {
 		return err
 	}

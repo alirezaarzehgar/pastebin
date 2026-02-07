@@ -9,7 +9,7 @@ import (
 )
 
 func loadLogLevel() (logger.Leveler, error) {
-	ll := os.Getenv("LOG_LEVEL")
+	ll := os.Getenv(KeyLogLevel)
 	ll = strings.ToLower(ll)
 
 	switch ll {

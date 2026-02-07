@@ -1,0 +1,13 @@
+package dotenv
+
+const (
+	KeyHttpAddress      = "HTTP_ADDRESS"
+	KeyHttpPort         = "HTTP_PORT"
+	KeyHttpIdleTimeout  = "HTTP_IDLE_TIMEOUT"
+	KeyHttpReadTimeout  = "HTTP_READ_TIMEOUT"
+	KeyHttpWriteTimeout = "HTTP_WRITE_TIMEOUT"
+
+	KeyHandlerMaxFileSize = "HANDLER_MAX_FILE_SIZE"
+
+	KeyLogLevel = "LOG_LEVEL"
+)

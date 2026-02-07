@@ -15,29 +15,29 @@ const (
 )
 
 func loadHttpConfig(cfg *config.Config) error {
-	addr := os.Getenv("HTTP_ADDRESS")
+	addr := os.Getenv(KeyHttpAddress)
 	if addr == "" {
 		addr = DefaultHttpAddress
 	}
 	cfg.Http.Address = addr
 
 	var err error
-	cfg.Http.Port, err = parseInt("HTTP_PORT", DefaultHttpPort)
+	cfg.Http.Port, err = parseInt(KeyHttpPort, DefaultHttpPort)
 	if err != nil {
 		return err
 	}
 
-	cfg.Http.IdleTimeout, err = parseDuration("HTTP_IDLE_TIMEOUT", DefaultHttpIdleTimeout)
+	cfg.Http.IdleTimeout, err = parseDuration(KeyHttpIdleTimeout, DefaultHttpIdleTimeout)
 	if err != nil {
 		return err
 	}
 
-	cfg.Http.ReadTimeout, err = parseDuration("HTTP_READ_TIMEOUT", DefaultHttpReadTimeout)
+	cfg.Http.ReadTimeout, err = parseDuration(KeyHttpReadTimeout, DefaultHttpReadTimeout)
 	if err != nil {
 		return err
 	}
 
-	cfg.Http.WriteTimeout, err = parseDuration("HTTP_WRITE_TIMEOUT", DefaultHttpWriteTimeout)
+	cfg.Http.WriteTimeout, err = parseDuration(KeyHttpWriteTimeout, DefaultHttpWriteTimeout)
 	if err != nil {
 		return err
 	}
