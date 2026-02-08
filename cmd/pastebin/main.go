@@ -3,11 +3,13 @@ package main
 import (
 	"os"
 
+	"github.com/alirezaarzehgar/pastebin/internal/logger"
+	"github.com/alirezaarzehgar/pastebin/internal/usecase/pastebin"
+
 	configFactory "github.com/alirezaarzehgar/pastebin/internal/config/factory"
 	handlerHttp "github.com/alirezaarzehgar/pastebin/internal/handler/http"
-	"github.com/alirezaarzehgar/pastebin/internal/logger"
+	objStoreFactory "github.com/alirezaarzehgar/pastebin/internal/infra/objstorage/factory"
 	loggerFactory "github.com/alirezaarzehgar/pastebin/internal/logger/factory"
-	"github.com/alirezaarzehgar/pastebin/internal/usecase/pastebin"
 )
 
 func main() {
@@ -21,7 +23,16 @@ func main() {
 	loggerChoice := loggerFactory.New(loggerFactory.LoggerSlog, cfg)
 	logger.DefaultLogger = loggerChoice
 
-	pastebinUsecase := pastebin.New()
+	objStore := objStoreFactory.New(objStoreFactory.ObjectStorageMinIO, cfg)
+
+	err = objStore.Connect()
+	if err != nil {
+		logger.Error("unable to connect to object storage", "error", err)
+		os.Exit(1)
+	}
+	logger.Debug("object storage is connected")
+
+	pastebinUsecase := pastebin.New(nil, objStore, nil)
 
 	logger.Info("start application", "address", cfg.Http.Address, "port", cfg.Http.Port)
 	h := handlerHttp.New(cfg, pastebinUsecase)

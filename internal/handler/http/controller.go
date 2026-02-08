@@ -3,8 +3,13 @@ package http
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/alirezaarzehgar/pastebin/internal/usecase/dto"
+)
+
+const (
+	DefaultPasteExpiry = time.Duration(time.Hour * 24)
 )
 
 func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
@@ -46,6 +51,7 @@ func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
 	paste, err := h.pastebinUsecase.CreatePaste(dto.CreatePasteArgs{
 		Content: content,
 		Files:   files,
+		Expiry:  DefaultPasteExpiry,
 	})
 	if err != nil {
 		h.JSON(w, http.StatusBadRequest, ResponseError{

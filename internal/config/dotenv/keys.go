@@ -10,4 +10,9 @@ const (
 	KeyHandlerMaxFileSize = "HANDLER_MAX_FILE_SIZE"
 
 	KeyLogLevel = "LOG_LEVEL"
+
+	KeyObjectStorageMinIOEndpoint        = "OBJECT_STORAGE_MINIO_ENDPOINT"
+	KeyObjectStorageMinIOAccessKeyID     = "OBJECT_STORAGE_MINIO_ACCESSKEYID"
+	KeyObjectStorageMinIOSecretAccessKey = "OBJECT_STORAGE_MINIO_SECRETACCESSKEY"
+	KeyObjectStorageMinIOUseSSL          = "OBJECT_STORAGE_MINIO_USESSL"
 )

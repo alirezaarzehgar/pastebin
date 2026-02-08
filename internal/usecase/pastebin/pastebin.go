@@ -1,31 +1,43 @@
 package pastebin
 
 import (
+	"context"
 	"fmt"
-	"io"
 
+	"github.com/alirezaarzehgar/pastebin/internal/domain/model"
+	"github.com/alirezaarzehgar/pastebin/internal/domain/repo"
 	"github.com/alirezaarzehgar/pastebin/internal/usecase"
 	"github.com/alirezaarzehgar/pastebin/internal/usecase/dto"
 )
 
 type pastebin struct {
+	persistence repo.Persistence
+	objStore    repo.ObjectStorage
+	cache       repo.Cache
 }
 
-func New() usecase.Pastebin {
-	return &pastebin{}
+func New(persistence repo.Persistence, objStore repo.ObjectStorage, cache repo.Cache) usecase.Pastebin {
+	return &pastebin{
+		persistence: persistence,
+		objStore:    objStore,
+		cache:       cache,
+	}
 }
 
 func (pb pastebin) CreatePaste(args dto.CreatePasteArgs) (*dto.CreatePasteResp, error) {
-	fmt.Println("content:", args.Content)
-	for _, f := range args.Files {
-		fmt.Println(f.Filename, ":")
-		data, _ := io.ReadAll(f.Reader)
-		fmt.Println(string(data))
-		f.Reader.Close()
+	ctx := context.Background()
+
+	uploadedFiles := args.Files.ModelUploadedFile()
+	reply, err := pb.objStore.UploadOjects(ctx, model.CreatePasteObjectArgs{
+		Files:  uploadedFiles,
+		Expiry: args.Expiry,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to upload files in object storage: %w", err)
 	}
 
 	paste := &dto.CreatePasteResp{
-		PasteID: "xxxx-xxxx-xxxx-xxxx",
+		PasteID: reply.ID,
 	}
 	return paste, nil
 }

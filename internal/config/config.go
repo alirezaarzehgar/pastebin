@@ -21,6 +21,13 @@ type Config struct {
 	Handler struct {
 		MaxFileSize int64
 	}
+
+	MinIO struct {
+		Endpoint        string
+		AccessKeyID     string
+		SecretAccessKey string
+		UseSSL          bool
+	}
 }
 
 type ConfigLoader interface {
