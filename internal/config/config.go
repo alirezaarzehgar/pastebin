@@ -28,6 +28,14 @@ type Config struct {
 		SecretAccessKey string
 		UseSSL          bool
 	}
+
+	CouchDB struct {
+		Port     int
+		Hostname string
+		Username string
+		Password string
+		Insecure bool
+	}
 }
 
 type ConfigLoader interface {

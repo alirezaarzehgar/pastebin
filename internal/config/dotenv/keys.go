@@ -15,4 +15,10 @@ const (
 	KeyObjectStorageMinIOAccessKeyID     = "OBJECT_STORAGE_MINIO_ACCESSKEYID"
 	KeyObjectStorageMinIOSecretAccessKey = "OBJECT_STORAGE_MINIO_SECRETACCESSKEY"
 	KeyObjectStorageMinIOUseSSL          = "OBJECT_STORAGE_MINIO_USESSL"
+
+	KeyPersistenceCouchDBHostname = "PERSISTENCE_COUCHDB_HOSTNAME"
+	KeyPersistenceCouchDBPort     = "PERSISTENCE_COUCHDB_PORT"
+	KeyPersistenceCouchDBUsername = "PERSISTENCE_COUCHDB_USERNAME"
+	KeyPersistenceCouchDBPassword = "PERSISTENCE_COUCHDB_PASSWORD"
+	KeyPersistenceCouchDBInsecure = "PERSISTENCE_COUCHDB_INSECURE"
 )

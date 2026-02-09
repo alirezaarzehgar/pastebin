@@ -9,6 +9,7 @@ import (
 	configFactory "github.com/alirezaarzehgar/pastebin/internal/config/factory"
 	handlerHttp "github.com/alirezaarzehgar/pastebin/internal/handler/http"
 	objStoreFactory "github.com/alirezaarzehgar/pastebin/internal/infra/objstorage/factory"
+	persistenceFactory "github.com/alirezaarzehgar/pastebin/internal/infra/persistance/factory"
 	loggerFactory "github.com/alirezaarzehgar/pastebin/internal/logger/factory"
 )
 
@@ -23,8 +24,15 @@ func main() {
 	loggerChoice := loggerFactory.New(loggerFactory.LoggerSlog, cfg)
 	logger.DefaultLogger = loggerChoice
 
-	objStore := objStoreFactory.New(objStoreFactory.ObjectStorageMinIO, cfg)
+	db := persistenceFactory.New(persistenceFactory.PersistenceCouchDB, cfg)
+	err = db.Connect()
+	if err != nil {
+		logger.Error("unable to connect to persistence layer", "error", err)
+		os.Exit(1)
+	}
+	logger.Debug("persistence backend is connected")
 
+	objStore := objStoreFactory.New(objStoreFactory.ObjectStorageMinIO, cfg)
 	err = objStore.Connect()
 	if err != nil {
 		logger.Error("unable to connect to object storage", "error", err)
@@ -32,7 +40,7 @@ func main() {
 	}
 	logger.Debug("object storage is connected")
 
-	pastebinUsecase := pastebin.New(nil, objStore, nil)
+	pastebinUsecase := pastebin.New(db, objStore, nil)
 
 	logger.Info("start application", "address", cfg.Http.Address, "port", cfg.Http.Port)
 	h := handlerHttp.New(cfg, pastebinUsecase)
