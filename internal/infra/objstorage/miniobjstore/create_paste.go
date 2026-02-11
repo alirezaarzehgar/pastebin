@@ -30,8 +30,8 @@ func (m *minIO) UploadOjects(ctx context.Context, args model.CreatePasteObjectAr
 		metadatas = append(metadatas, model.FileMetadata{
 			Filename:    f.Filename,
 			ContentType: f.ContentType,
-			Size:        f.Size,
-			Checksum:    uInfo.ChecksumSHA1,
+			Size:        uInfo.Size,
+			Checksum:    uInfo.ETag,
 		})
 	}
 
