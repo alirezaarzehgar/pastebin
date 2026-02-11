@@ -15,8 +15,8 @@ type UploadedFile struct {
 type UploadedFiles []UploadedFile
 
 type CreatePasteObjectArgs struct {
-	Files  UploadedFiles
-	Expiry time.Duration
+	Files     UploadedFiles
+	ExpiredAt time.Time
 }
 
 type FileMetadata struct {

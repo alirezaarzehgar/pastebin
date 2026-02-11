@@ -3,7 +3,6 @@ package miniobjstore
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/alirezaarzehgar/pastebin/internal/domain/model"
 	"github.com/alirezaarzehgar/pastebin/internal/logger"
@@ -22,7 +21,7 @@ func (m *minIO) UploadOjects(ctx context.Context, args model.CreatePasteObjectAr
 	var metadatas model.FileMetadatas
 	for _, f := range args.Files {
 		uInfo, err := m.client.PutObject(ctx, bucketName, f.Filename, f.Reader, f.Size, minio.PutObjectOptions{
-			Expires: time.Now().Add(args.Expiry),
+			Expires: args.ExpiredAt,
 		})
 		if err != nil {
 			logger.Error("failed to upload file on minio", "error", err, "filename", f.Filename, "bucket_name", bucketName)

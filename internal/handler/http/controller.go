@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -67,5 +68,7 @@ func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *HttpHandler) getPaste(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("GET PASTE"))
+	id := r.PathValue("id")
+
+	w.Write([]byte(fmt.Sprintf("id: %+v", id)))
 }
