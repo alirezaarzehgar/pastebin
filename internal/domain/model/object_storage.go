@@ -20,10 +20,10 @@ type CreatePasteObjectArgs struct {
 }
 
 type FileMetadata struct {
-	Filename    string
-	ContentType string
-	Size        int64
-	Checksum    string
+	Filename    string `json:"filename"`
+	ContentType string `json:"content-type"`
+	Size        int64  `json:"size"`
+	Checksum    string `json:"checksum"`
 }
 
 type FileMetadatas []FileMetadata

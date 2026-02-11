@@ -57,5 +57,5 @@ func (l stdLogger) Verbose(msg string, args ...any) {
 }
 
 var DefaultLogger Logger = stdLogger{
-	level: LevelInfo,
+	level: LevelDebug,
 }

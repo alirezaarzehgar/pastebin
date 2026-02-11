@@ -11,6 +11,8 @@ type CouchDB struct {
 	username string
 	password string
 	protocol string
+
+	metadataDBName string
 }
 
 func New(cfg *config.Config) repo.Persistence {
@@ -25,5 +27,7 @@ func New(cfg *config.Config) repo.Persistence {
 		username: cfg.CouchDB.Username,
 		password: cfg.CouchDB.Password,
 		protocol: protocol,
+
+		metadataDBName: "metadata",
 	}
 }

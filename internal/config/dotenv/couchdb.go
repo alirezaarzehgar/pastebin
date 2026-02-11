@@ -41,5 +41,11 @@ func loadCouchDBConfig(cfg *config.Config) error {
 		}
 	}
 
+	metadataDBName := os.Getenv(KeyPersistenceCouchDBMetadataDBName)
+	if metadataDBName == "" {
+		return fmt.Errorf("%s is empty", KeyPersistenceCouchDBMetadataDBName)
+	}
+	cfg.CouchDB.MetadataDBName = metadataDBName
+
 	return nil
 }

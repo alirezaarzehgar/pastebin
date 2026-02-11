@@ -1,10 +1,10 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/alirezaarzehgar/pastebin/internal/logger"
 	"github.com/alirezaarzehgar/pastebin/internal/usecase/dto"
 )
 
@@ -16,7 +16,6 @@ func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(h.config.Handler.MaxFileSize)
 	if err != nil {
 		h.JSON(w, http.StatusBadRequest, ResponseError{
-			Error:   err,
 			Message: ResponseErrorParseMaltiPartForm.Error(),
 		})
 		return
@@ -42,7 +41,6 @@ func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
 	content := r.FormValue("content")
 	if content == "" && len(files) == 0 {
 		h.JSON(w, http.StatusBadRequest, ResponseError{
-			Error:   fmt.Errorf("empty request"),
 			Message: ResponseErrorCreatePasteEmptyRequest.Error(),
 		})
 		return
@@ -54,9 +52,9 @@ func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
 		Expiry:  DefaultPasteExpiry,
 	})
 	if err != nil {
+		logger.Error("failed to create paste", "error", err)
 		h.JSON(w, http.StatusBadRequest, ResponseError{
-			Error:   err,
-			Message: "",
+			Message: err.Error(),
 		})
 		return
 	}

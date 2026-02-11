@@ -36,6 +36,14 @@ func (pb pastebin) CreatePaste(args dto.CreatePasteArgs) (*dto.CreatePasteResp, 
 		return nil, fmt.Errorf("failed to upload files in object storage: %w", err)
 	}
 
+	err = pb.persistence.SavePasteMetadata(ctx, model.CreatePasteMetadataArgs{
+		ID:        reply.ID,
+		Metadatas: reply.Metadatas,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to store metadata in persistence backend: %w", err)
+	}
+
 	paste := &dto.CreatePasteResp{
 		PasteID: reply.ID,
 	}

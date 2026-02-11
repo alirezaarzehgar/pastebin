@@ -30,11 +30,12 @@ type Config struct {
 	}
 
 	CouchDB struct {
-		Port     int
-		Hostname string
-		Username string
-		Password string
-		Insecure bool
+		Port           int
+		Hostname       string
+		Username       string
+		Password       string
+		Insecure       bool
+		MetadataDBName string
 	}
 }
 
