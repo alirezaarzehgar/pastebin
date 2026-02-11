@@ -9,4 +9,5 @@ import (
 type ObjectStorage interface {
 	Connect() error
 	UploadOjects(context.Context, model.CreatePasteObjectArgs) (*model.CreatePasteObjectReply, error)
+	DownloadOject(context.Context, model.GetPasteObjectArgs) (*model.GetPasteObjectReply, error)
 }

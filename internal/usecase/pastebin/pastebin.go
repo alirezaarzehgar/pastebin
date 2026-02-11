@@ -8,6 +8,7 @@ import (
 
 	"github.com/alirezaarzehgar/pastebin/internal/domain/model"
 	"github.com/alirezaarzehgar/pastebin/internal/domain/repo"
+	"github.com/alirezaarzehgar/pastebin/internal/infra/objstorage"
 	"github.com/alirezaarzehgar/pastebin/internal/infra/persistance"
 	"github.com/alirezaarzehgar/pastebin/internal/usecase"
 	"github.com/alirezaarzehgar/pastebin/internal/usecase/dto"
@@ -76,5 +77,21 @@ func (pb pastebin) GetPasteContent(args dto.GetPasteContentArgs) (*dto.GetPasteC
 }
 
 func (pb pastebin) GetPasteFile(args dto.GetPasteFileArgs) (*dto.GetPasteFileReply, error) {
-	return nil, nil
+	ctx := context.Background()
+
+	fileReply, err := pb.objStore.DownloadOject(ctx, model.GetPasteObjectArgs{
+		PasteID:  args.PasteID,
+		Filename: args.Filename,
+	})
+	if err != nil {
+		if errors.Is(err, objstorage.NotFound) {
+			return nil, usecase.NotFound
+		}
+		return nil, fmt.Errorf("failed to get file: %w", err)
+	}
+
+	reply := dto.GetPasteFileReply{
+		File: fileReply.File,
+	}
+	return &reply, nil
 }

@@ -2,6 +2,8 @@ package http
 
 import (
 	"errors"
+	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -94,7 +96,7 @@ func (h *HttpHandler) getPasteFile(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	filename := r.PathValue("filename")
 
-	reply, err := h.pastebinUsecase.GetPasteFile(dto.GetPasteFileArgs{
+	fileReply, err := h.pastebinUsecase.GetPasteFile(dto.GetPasteFileArgs{
 		PasteID:  id,
 		Filename: filename,
 	})
@@ -106,5 +108,17 @@ func (h *HttpHandler) getPasteFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.JSON(w, http.StatusOK, reply)
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Transfer-Encoding", "binary")
+
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Set("Expires", "0")
+
+	_, err = io.Copy(w, fileReply.File)
+	if err != nil {
+		logger.Error("failed to stream file", "error", err, "id", id)
+		return
+	}
 }

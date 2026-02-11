@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"io"
+
 	"github.com/alirezaarzehgar/pastebin/internal/domain/model"
 )
 
@@ -40,4 +42,5 @@ type GetPasteFileArgs struct {
 }
 
 type GetPasteFileReply struct {
+	File io.Reader
 }

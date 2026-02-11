@@ -32,3 +32,12 @@ type CreatePasteObjectReply struct {
 	Metadatas FileMetadatas
 	ID        string
 }
+
+type GetPasteObjectArgs struct {
+	PasteID  string
+	Filename string
+}
+
+type GetPasteObjectReply struct {
+	File io.Reader
+}
