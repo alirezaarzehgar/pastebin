@@ -1,11 +1,12 @@
 package http
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/alirezaarzehgar/pastebin/internal/logger"
+	"github.com/alirezaarzehgar/pastebin/internal/usecase"
 	"github.com/alirezaarzehgar/pastebin/internal/usecase/dto"
 )
 
@@ -67,8 +68,43 @@ func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h *HttpHandler) getPaste(w http.ResponseWriter, r *http.Request) {
+func (h *HttpHandler) getPasteContent(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
-	w.Write([]byte(fmt.Sprintf("id: %+v", id)))
+	reply, err := h.pastebinUsecase.GetPasteContent(dto.GetPasteContentArgs{PasteID: id})
+	if err != nil {
+		if errors.Is(err, usecase.NotFound) {
+			h.JSON(w, http.StatusNotFound, ResponseError{
+				Message: err.Error(),
+			})
+			return
+		}
+
+		logger.Error("failed to download given paste id", "error", err, "id", id)
+		h.JSON(w, http.StatusBadRequest, ResponseError{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	h.JSON(w, http.StatusOK, reply)
+}
+
+func (h *HttpHandler) getPasteFile(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	filename := r.PathValue("filename")
+
+	reply, err := h.pastebinUsecase.GetPasteFile(dto.GetPasteFileArgs{
+		PasteID:  id,
+		Filename: filename,
+	})
+	if err != nil {
+		logger.Error("failed to download given paste id", "error", err, "id", id)
+		h.JSON(w, http.StatusBadRequest, ResponseError{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	h.JSON(w, http.StatusOK, reply)
 }

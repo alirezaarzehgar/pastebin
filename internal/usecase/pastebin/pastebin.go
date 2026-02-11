@@ -2,11 +2,13 @@ package pastebin
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/alirezaarzehgar/pastebin/internal/domain/model"
 	"github.com/alirezaarzehgar/pastebin/internal/domain/repo"
+	"github.com/alirezaarzehgar/pastebin/internal/infra/persistance"
 	"github.com/alirezaarzehgar/pastebin/internal/usecase"
 	"github.com/alirezaarzehgar/pastebin/internal/usecase/dto"
 )
@@ -40,6 +42,7 @@ func (pb pastebin) CreatePaste(args dto.CreatePasteArgs) (*dto.CreatePasteResp, 
 
 	err = pb.persistence.SavePasteMetadata(ctx, model.CreatePasteMetadataArgs{
 		ID:        reply.ID,
+		Content:   args.Content,
 		Metadatas: reply.Metadatas,
 		ExpiredAt: expiredAt,
 	})
@@ -53,6 +56,25 @@ func (pb pastebin) CreatePaste(args dto.CreatePasteArgs) (*dto.CreatePasteResp, 
 	return paste, nil
 }
 
-func (pb pastebin) DownloadPaste(args dto.DownloadPasteArgs) (*dto.DownloadPasteReply, error) {
+func (pb pastebin) GetPasteContent(args dto.GetPasteContentArgs) (*dto.GetPasteContentReply, error) {
+	ctx := context.Background()
+
+	reply, err := pb.persistence.GetPasteMetadata(ctx, model.GetPasteMetadataArgs{ID: args.PasteID})
+	if err != nil {
+		if errors.Is(err, persistance.RecordNotFound) {
+			return nil, usecase.NotFound
+		}
+		return nil, fmt.Errorf("failed to get content metadata: %w", err)
+	}
+
+	contentReply := dto.GetPasteContentReply{
+		FileMetadatas: dto.ConvertModelToFileMetadatas(reply.FileMetadatas),
+		Content:       reply.Content,
+	}
+
+	return &contentReply, nil
+}
+
+func (pb pastebin) GetPasteFile(args dto.GetPasteFileArgs) (*dto.GetPasteFileReply, error) {
 	return nil, nil
 }
