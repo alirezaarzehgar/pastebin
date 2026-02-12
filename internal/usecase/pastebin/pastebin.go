@@ -17,14 +17,12 @@ import (
 type pastebin struct {
 	persistence repo.Persistence
 	objStore    repo.ObjectStorage
-	cache       repo.Cache
 }
 
-func New(persistence repo.Persistence, objStore repo.ObjectStorage, cache repo.Cache) usecase.Pastebin {
+func New(persistence repo.Persistence, objStore repo.ObjectStorage) usecase.Pastebin {
 	return &pastebin{
 		persistence: persistence,
 		objStore:    objStore,
-		cache:       cache,
 	}
 }
 

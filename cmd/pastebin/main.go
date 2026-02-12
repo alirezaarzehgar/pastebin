@@ -31,23 +31,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	db := persistenceFactory.New(persistenceFactory.PersistenceCouchDB, cache, cfg)
-	err = db.Connect()
+	db, err := persistenceFactory.New(persistenceFactory.PersistenceCouchDB, cache, cfg)
 	if err != nil {
 		logger.Error("unable to connect to persistence layer", "error", err)
 		os.Exit(1)
 	}
 	logger.Debug("persistence backend is connected")
 
-	objStore := objStoreFactory.New(objStoreFactory.ObjectStorageMinIO, cfg)
-	err = objStore.Connect()
+	objStore, err := objStoreFactory.New(objStoreFactory.ObjectStorageMinIO, cfg)
 	if err != nil {
 		logger.Error("unable to connect to object storage", "error", err)
 		os.Exit(1)
 	}
 	logger.Debug("object storage is connected")
 
-	pastebinUsecase := pastebin.New(db, objStore, nil)
+	pastebinUsecase := pastebin.New(db, objStore)
 
 	logger.Info("start application", "address", cfg.Http.Address, "port", cfg.Http.Port)
 	h := handlerHttp.New(cfg, pastebinUsecase)

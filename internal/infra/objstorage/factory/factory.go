@@ -12,7 +12,7 @@ const (
 	ObjectStorageMinIO = iota
 )
 
-func New(objStore ObjectStorage, cfg *config.Config) repo.ObjectStorage {
+func New(objStore ObjectStorage, cfg *config.Config) (repo.ObjectStorage, error) {
 	switch objStore {
 	case ObjectStorageMinIO:
 		return miniobjstore.New(cfg)

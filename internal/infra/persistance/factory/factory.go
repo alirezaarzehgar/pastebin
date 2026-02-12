@@ -12,7 +12,7 @@ const (
 	PersistenceCouchDB = iota
 )
 
-func New(persistence Persistence, cache repo.Cache, cfg *config.Config) repo.Persistence {
+func New(persistence Persistence, cache repo.Cache, cfg *config.Config) (repo.Persistence, error) {
 	switch persistence {
 	case PersistenceCouchDB:
 		return couchdb.New(cfg, cache)
