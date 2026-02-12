@@ -9,6 +9,7 @@ import (
 var (
 	ResponseErrorParseMaltiPartForm      = errors.New("unable to parse multipart form data")
 	ResponseErrorCreatePasteEmptyRequest = errors.New("unable to process empty request")
+	ResponseErrorInvalidFields           = errors.New("invalid fields")
 )
 
 type ResponseError struct {

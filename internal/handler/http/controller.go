@@ -14,6 +14,7 @@ import (
 
 const (
 	DefaultPasteExpiry = time.Duration(time.Hour * 24)
+	MaxPasteExpiry     = time.Duration(time.Hour * 24 * 90)
 )
 
 func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
@@ -50,10 +51,28 @@ func (h *HttpHandler) createPaste(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	expiry := DefaultPasteExpiry
+	if r.FormValue("expiry") != "" {
+		expiry, err = time.ParseDuration(r.FormValue("expiry"))
+		if err != nil {
+			h.JSON(w, http.StatusBadRequest, ResponseError{
+				Message: ResponseErrorInvalidFields.Error(),
+			})
+			return
+		}
+	}
+
+	if expiry > MaxPasteExpiry {
+		h.JSON(w, http.StatusBadRequest, ResponseError{
+			Message: ResponseErrorInvalidFields.Error(),
+		})
+		return
+	}
+
 	paste, err := h.pastebinUsecase.CreatePaste(dto.CreatePasteArgs{
 		Content: content,
 		Files:   files,
-		Expiry:  DefaultPasteExpiry,
+		Expiry:  expiry,
 	})
 	if err != nil {
 		logger.Error("failed to create paste", "error", err)
