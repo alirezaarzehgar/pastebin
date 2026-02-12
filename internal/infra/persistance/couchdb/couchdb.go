@@ -6,6 +6,8 @@ import (
 )
 
 type CouchDB struct {
+	cache repo.Cache
+
 	hostname string
 	port     int
 	username string
@@ -15,13 +17,15 @@ type CouchDB struct {
 	metadataDBName string
 }
 
-func New(cfg *config.Config) repo.Persistence {
+func New(cfg *config.Config, cache repo.Cache) repo.Persistence {
 	protocol := "https"
 	if cfg.CouchDB.Insecure {
 		protocol = "http"
 	}
 
 	return &CouchDB{
+		cache: cache,
+
 		hostname: cfg.CouchDB.Hostname,
 		port:     cfg.CouchDB.Port,
 		username: cfg.CouchDB.Username,

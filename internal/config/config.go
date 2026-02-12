@@ -37,6 +37,13 @@ type Config struct {
 		Insecure       bool
 		MetadataDBName string
 	}
+
+	Redis struct {
+		Address            string
+		Password           string
+		DB                 int
+		DefaultMetadataTTL time.Duration
+	}
 }
 
 type ConfigLoader interface {

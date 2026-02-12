@@ -8,6 +8,7 @@ import (
 
 	configFactory "github.com/alirezaarzehgar/pastebin/internal/config/factory"
 	handlerHttp "github.com/alirezaarzehgar/pastebin/internal/handler/http"
+	cacheFactory "github.com/alirezaarzehgar/pastebin/internal/infra/cache/factory"
 	objStoreFactory "github.com/alirezaarzehgar/pastebin/internal/infra/objstorage/factory"
 	persistenceFactory "github.com/alirezaarzehgar/pastebin/internal/infra/persistance/factory"
 	loggerFactory "github.com/alirezaarzehgar/pastebin/internal/logger/factory"
@@ -24,7 +25,13 @@ func main() {
 	loggerChoice := loggerFactory.New(loggerFactory.LoggerSlog, cfg)
 	logger.DefaultLogger = loggerChoice
 
-	db := persistenceFactory.New(persistenceFactory.PersistenceCouchDB, cfg)
+	cache, err := cacheFactory.New(cacheFactory.CacheRedis, cfg)
+	if err != nil {
+		logger.Error("unable to connect to cache server", "error", err)
+		os.Exit(1)
+	}
+
+	db := persistenceFactory.New(persistenceFactory.PersistenceCouchDB, cache, cfg)
 	err = db.Connect()
 	if err != nil {
 		logger.Error("unable to connect to persistence layer", "error", err)

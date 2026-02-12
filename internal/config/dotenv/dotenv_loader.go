@@ -43,6 +43,11 @@ func (l dotenvLoader) Load() (*config.Config, error) {
 		return nil, err
 	}
 
+	err = loadRedisConfig(cfg)
+	if err != nil {
+		return nil, err
+	}
+
 	return cfg, nil
 }
 

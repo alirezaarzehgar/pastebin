@@ -12,10 +12,10 @@ const (
 	PersistenceCouchDB = iota
 )
 
-func New(persistence Persistence, cfg *config.Config) repo.Persistence {
+func New(persistence Persistence, cache repo.Cache, cfg *config.Config) repo.Persistence {
 	switch persistence {
 	case PersistenceCouchDB:
-		return couchdb.New(cfg)
+		return couchdb.New(cfg, cache)
 	default:
 		panic("invalid object storage backend selected")
 	}

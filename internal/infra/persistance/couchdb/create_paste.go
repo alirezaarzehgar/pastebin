@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/alirezaarzehgar/pastebin/internal/domain/model"
+	"github.com/alirezaarzehgar/pastebin/internal/logger"
 )
 
 func (p CouchDB) SavePasteMetadata(ctx context.Context, args model.CreatePasteMetadataArgs) error {
@@ -44,6 +46,17 @@ func (p CouchDB) SavePasteMetadata(ctx context.Context, args model.CreatePasteMe
 
 	if !saveResp.Ok {
 		return fmt.Errorf("request was not successful")
+	}
+
+	key := cacheMetadataKey(args.ID)
+	exp := min(time.Until(args.ExpiredAt), MaxMetadataCacheTTL)
+	value := CachedPaste{
+		Content:   args.Content,
+		Metadatas: args.Metadatas,
+	}
+	err = p.cache.Set(ctx, key, value, exp)
+	if err != nil {
+		logger.Debug("failed to set metadata in cache", "error", err, "key", key)
 	}
 
 	return nil

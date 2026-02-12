@@ -22,4 +22,9 @@ const (
 	KeyPersistenceCouchDBPassword       = "PERSISTENCE_COUCHDB_PASSWORD"
 	KeyPersistenceCouchDBInsecure       = "PERSISTENCE_COUCHDB_INSECURE"
 	KeyPersistenceCouchDBMetadataDBName = "PERSISTENCE_COUCHDB_METADATA_DB_NAME"
+
+	KeyCacheRedisAddress     = "KEY_CACHE_REDIS_ADDRESS"
+	KeyCacheRedisPassword    = "KEY_CACHE_REDIS_PASSWORD"
+	KeyCacheRedisDB          = "KEY_CACHE_REDIS_DB"
+	KeyCacheRedisMetadataTTL = "KEY_CACHE_REDIS_METADATA_TTL"
 )

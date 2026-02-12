@@ -4,16 +4,31 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 
 	"github.com/alirezaarzehgar/pastebin/internal/domain/model"
+	"github.com/alirezaarzehgar/pastebin/internal/infra/cache"
 	"github.com/alirezaarzehgar/pastebin/internal/infra/persistance"
+	"github.com/alirezaarzehgar/pastebin/internal/logger"
 )
 
 func (p CouchDB) GetPasteMetadata(ctx context.Context, args model.GetPasteMetadataArgs) (*model.GetPasteMetadataReply, error) {
+	var cachedPaste CachedPaste
+	err := p.cache.Get(ctx, cacheMetadataKey(args.ID), &cachedPaste)
+	if err == nil {
+		reply := model.GetPasteMetadataReply{
+			FileMetadatas: cachedPaste.Metadatas,
+			Content:       cachedPaste.Content,
+		}
+		return &reply, nil
+	} else if !errors.Is(err, cache.NotFound) {
+		logger.Error("failed to get cached data", "error", err)
+	}
+
 	endpoint, err := url.JoinPath(p.url(), p.metadataDBName, args.ID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid url path: %w", err)
