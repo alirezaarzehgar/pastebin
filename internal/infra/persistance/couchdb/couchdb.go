@@ -21,7 +21,7 @@ type CouchDB struct {
 	metadataDBName string
 }
 
-func New(cfg *config.Config, cache repo.Cache) (repo.Persistence, error) {
+func NewClient(cfg *config.Config, cache repo.Cache) (repo.Persistence, error) {
 	protocol := "https"
 	if cfg.CouchDB.Insecure {
 		protocol = "http"

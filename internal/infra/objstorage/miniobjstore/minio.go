@@ -15,7 +15,7 @@ type minIO struct {
 	client *minio.Client
 }
 
-func New(cfg *config.Config) (repo.ObjectStorage, error) {
+func NewClient(cfg *config.Config) (repo.ObjectStorage, error) {
 	objStore := minIO{
 		cfg: cfg,
 	}

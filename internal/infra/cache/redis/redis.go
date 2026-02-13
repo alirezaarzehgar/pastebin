@@ -18,7 +18,7 @@ type RedisCache struct {
 	redis      *redisV9.Client
 }
 
-func New(cfg *config.Config) (repo.Cache, error) {
+func NewClient(cfg *config.Config) (repo.Cache, error) {
 	r := redisV9.NewClient(&redisV9.Options{
 		Addr:     cfg.Redis.Address,
 		Password: cfg.Redis.Password,

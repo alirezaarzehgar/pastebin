@@ -15,7 +15,7 @@ const (
 func New(persistence Persistence, cache repo.Cache, cfg *config.Config) (repo.Persistence, error) {
 	switch persistence {
 	case PersistenceCouchDB:
-		return couchdb.New(cfg, cache)
+		return couchdb.NewClient(cfg, cache)
 	default:
 		panic("invalid object storage backend selected")
 	}

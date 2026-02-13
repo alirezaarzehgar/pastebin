@@ -15,7 +15,7 @@ const (
 func New(c Cache, cfg *config.Config) (repo.Cache, error) {
 	switch c {
 	case CacheRedis:
-		return redis.New(cfg)
+		return redis.NewClient(cfg)
 	default:
 		panic("invalid cache backend selected")
 	}
